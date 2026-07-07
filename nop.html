@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>NOPAL STORE - Payment</title>
+
+    <!-- Font Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Background decorative */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.05) 0%, transparent 50%);
+            animation: bgFloat 25s ease-in-out infinite alternate;
+            z-index: 0;
+        }
+
+        @keyframes bgFloat {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(2%, 3%) rotate(3deg); }
+        }
+
+        /* Main Card */
+        .payment-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .payment-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 32px 28px 36px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.03);
+            animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Header with Logo */
+        .store-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .store-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            flex-shrink: 0;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .store-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .store-info {
+            flex: 1;
+        }
+
+        .store-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .store-tag {
+            font-size: 12px;
+            font-weight: 600;
+            color: #94a3b8;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 14px;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        .store-tag i {
+            color: #fbbf24;
+            font-size: 10px;
+        }
+
+        /* QRIS Section */
+        .qris-section {
+            text-align: center;
+            margin-bottom: 28px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .qris-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .qris-label i {
+            color: #fbbf24;
+            font-size: 16px;
+        }
+
+        .qris-image {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #fff;
+            padding: 8px;
+        }
+
+        .qris-image:hover {
+            transform: scale(1.03);
+            border-color: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 16px 56px rgba(255, 215, 0, 0.1);
+        }
+
+        .qris-name {
+            margin-top: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .qris-name span {
+            color: #94a3b8;
+            font-weight: 400;
+            font-size: 13px;
+        }
+
+        /* Payment Methods */
+        .methods-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .methods-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .method-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .method-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .method-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 215, 0, 0.15);
+            transform: translateX(4px);
+        }
+
+        .method-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .method-icon.dana {
+            background: rgba(45, 212, 191, 0.12);
+            color: #2dd4bf;
+        }
+
+        .method-icon.gopay {
+            background: rgba(52, 211, 153, 0.12);
+            color: #34d399;
+        }
+
+        .method-icon.whatsapp {
+            background: rgba(37, 211, 102, 0.12);
+            color: #25d366;
+        }
+
+        .method-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .method-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .method-detail {
+            font-size: 13px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .method-detail .owner {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 1px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .method-copy {
+            color: #64748b;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid transparent;
+            flex-shrink: 0;
+        }
+
+        .method-copy:hover {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.08);
+            border-color: rgba(251, 191, 36, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* Admin Contact */
+        .admin-section {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 16px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: #0f0c29;
+            flex-shrink: 0;
+        }
+
+        .admin-text {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .admin-text strong {
+            color: #f1f5f9;
+            font-weight: 700;
+            display: block;
+            font-size: 15px;
+        }
+
+        .btn-wa {
+            background: rgba(37, 211, 102, 0.12);
+            color: #25d366;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 13px;
+            border: 1px solid rgba(37, 211, 102, 0.15);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-wa:hover {
+            background: rgba(37, 211, 102, 0.2);
+            border-color: rgba(37, 211, 102, 0.3);
+            transform: scale(1.02);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #475569;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer i {
+            color: #fbbf24;
+        }
+
+        .footer .dot {
+            color: #334155;
+            font-size: 4px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            color: #f1f5f9;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast i {
+            color: #34d399;
+            font-size: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .payment-card {
+                padding: 24px 16px 28px;
+                border-radius: 28px;
+            }
+            .store-logo {
+                width: 50px;
+                height: 50px;
+                border-radius: 16px;
+            }
+            .store-name {
+                font-size: 19px;
+            }
+            .method-item {
+                padding: 12px 14px;
+            }
+            .method-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+            .qris-image {
+                max-width: 160px;
+            }
+            .admin-section {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .admin-info {
+                justify-content: center;
+            }
+            .btn-wa {
+                justify-content: center;
+            }
+            .footer {
+                flex-direction: column;
+                gap: 6px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .payment-card {
+                padding: 18px 12px 22px;
+            }
+            .method-detail {
+                font-size: 12px;
+            }
+            .method-name {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="payment-wrapper">
+        <div class="payment-card">
+
+            <!-- Header Store -->
+            <div class="store-header">
+                <div class="store-logo">
+                    <img src="https://files.catbox.moe/uxjwm8.jpg" alt="NOPAL STORE Logo" loading="lazy" />
+                </div>
+                <div class="store-info">
+                    <div class="store-name">NOPAL STORE</div>
+                    <div class="store-tag">
+                        <i class="fas fa-shield-alt"></i> Trusted Seller
+                    </div>
+                </div>
+                <i class="fas fa-check-circle" style="color: #34d399; font-size: 22px;"></i>
+            </div>
+
+            <!-- QRIS -->
+            <div class="qris-section">
+                <div class="qris-label">
+                    <i class="fas fa-qrcode"></i> Scan QRIS
+                </div>
+                <img 
+                    src="https://files.catbox.moe/ns4y3v.jpg" 
+                    alt="QRIS NOPAL STORE" 
+                    class="qris-image"
+                    onclick="copyText('QRIS NOPAL GYZEE', 'QRIS')"
+                    loading="lazy"
+                />
+                <div class="qris-name">
+                    NOPAL GYZEE <span>• QRIS</span>
+                </div>
+            </div>
+
+            <!-- Methods Title -->
+            <div class="methods-title">
+                <i class="fas fa-credit-card" style="color: #fbbf24;"></i>
+                Metode Pembayaran
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="method-list">
+
+                <!-- DANA -->
+                <div class="method-item">
+                    <div class="method-icon dana">
+                        <i class="fas fa-circle-dollar"></i>
+                    </div>
+                    <div class="method-info">
+                        <div class="method-name">DANA</div>
+                        <div class="method-detail">
+                            <span id="dana-number">0882 8987 6993</span>
+                            <span class="owner">a.n Warsih</span>
+                        </div>
+                    </div>
+                    <div class="method-copy" onclick="copyText('088289876993', 'DANA')" title="Salin nomor">
+                        <i class="fas fa-copy"></i>
+                    </div>
+                </div>
+
+                <!-- GOPAY -->
+                <div class="method-item">
+                    <div class="method-icon gopay">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="method-info">
+                        <div class="method-name">GoPay</div>
+                        <div class="method-detail">
+                            <span id="gopay-number">0857 7325 4516</span>
+                            <span class="owner">a.n NopalSeteruu</span>
+                        </div>
+                    </div>
+                    <div class="method-copy" onclick="copyText('085773254516', 'GoPay')" title="Salin nomor">
+                        <i class="fas fa-copy"></i>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Admin Contact -->
+            <div class="admin-section">
+                <div class="admin-info">
+                    <div class="admin-avatar">NS</div>
+                    <div class="admin-text">
+                        <strong>NOPAL SETERUU</strong>
+                        Admin • Fast Response
+                    </div>
+                </div>
+                <a href="https://wa.me/6285773254516" target="_blank" class="btn-wa">
+                    <i class="fab fa-whatsapp"></i> Chat Admin
+                </a>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <span><i class="fas fa-lock"></i> Aman & Terpercaya</span>
+                <span class="dot">•</span>
+                <span><i class="fas fa-bolt"></i> Proses Cepat</span>
+                <span class="dot">•</span>
+                <span><i class="fas fa-headset"></i> Support 24/7</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Nomor disalin!</span>
+    </div>
+
+    <script>
+        function copyText(text, method) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('toast');
+                const msg = document.getElementById('toastMessage');
+                
+                if (method === 'QRIS') {
+                    msg.innerText = `✅ ${text} berhasil disalin!`;
+                } else {
+                    msg.innerText = `✅ ${method} ${text} disalin!`;
+                }
+                
+                toast.classList.add('show');
+                
+                clearTimeout(window.toastTimeout);
+                window.toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2500);
+            }).catch(() => {
+                // Fallback untuk browser yang tidak support clipboard
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                const toast = document.getElementById('toast');
+                const msg = document.getElementById('toastMessage');
+                msg.innerText = `✅ ${method} ${text} disalin!`;
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2500);
+            });
+        }
+    </script>
+
+</body>
+</html>
